@@ -1,0 +1,79 @@
+create table borrower (
+    rollin number primary key,
+    name varchar2(30),
+    dateofissue date,
+    nameofbook varchar2(50),
+    status char(1)
+);
+
+create table fine (
+    roll_no number,
+    date1 date,
+    amt number
+);
+
+insert into borrower values (1, 'amit', to_date('2024-04-01','yyyy-mm-dd'), 'dbms', 'i');
+
+insert into borrower values (2, 'neha', to_date('2024-03-10','yyyy-mm-dd'), 'java', 'i');
+
+insert into borrower values (3, 'rahul', to_date('2024-02-01','yyyy-mm-dd'), 'python', 'i');
+
+
+
+set serveroutput on;
+
+declare
+    v_roll borrower.rollin%type;
+    v_book borrower.nameofbook%type;
+    v_issue_date borrower.dateofissue%type;
+    v_days number;
+    v_fine number := 0;
+
+begin
+    -- accept input
+    v_roll := &enter_roll_no;
+    v_book := '&enter_book_name';
+
+    -- get issue date
+    select dateofissue into v_issue_date
+    from borrower
+    where rollin = v_roll and nameofbook = v_book;
+
+    -- calculate days
+    v_days := sysdate - v_issue_date;
+
+    dbms_output.put_line('days: ' || v_days);
+
+    -- fine calculation
+    if v_days > 15 and v_days <= 30 then
+        v_fine := v_days * 5;
+
+    elsif v_days > 30 then
+        v_fine := (30 * 5) + ((v_days - 30) * 50);
+
+    else
+        v_fine := 0;
+    end if;
+
+    dbms_output.put_line('fine amount: ' || v_fine);
+
+    -- update status (i → r)
+    update borrower
+    set status = 'r'
+    where rollin = v_roll;
+
+    -- insert into fine table if fine exists
+    if v_fine > 0 then
+        insert into fine values (v_roll, sysdate, v_fine);
+    end if;
+
+    commit;
+
+exception
+    when no_data_found then
+        dbms_output.put_line('record not found');
+
+    when others then
+        dbms_output.put_line('error: ' || sqlerrm);
+end;
+/
