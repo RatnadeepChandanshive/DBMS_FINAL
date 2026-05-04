@@ -1,0 +1,15 @@
+SELECT DISTINCT i.name, t.semester
+FROM instructor i
+JOIN teaches t ON i.T_ID = t.T_ID;
+
+CREATE VIEW student_view AS
+SELECT S_ID, name, dept_name, tot_cred
+FROM student;
+
+SELECT * FROM student_view;
+
+ALTER TABLE student
+CHANGE dept_name department_name VARCHAR(50);
+
+DELETE FROM student
+WHERE dept_name IS NULL;
