@@ -1,0 +1,60 @@
+create table n_rollcall (
+    roll number primary key,
+    name varchar2(30)
+);
+
+create table o_rollcall (
+    roll number primary key,
+    name varchar2(30)
+);
+
+insert into n_rollcall values (1, 'amit');
+insert into n_rollcall values (2, 'neha');
+insert into n_rollcall values (3, 'rahul');
+
+insert into o_rollcall values (2, 'neha'); 
+
+set serveroutput on;
+
+declare
+    -- cursor for new table
+    cursor c1 is
+        select roll, name from n_rollcall;
+
+    -- parameterized cursor to check existence
+    cursor c2(p_roll number) is
+        select roll from o_rollcall where roll = p_roll;
+
+    v_roll n_rollcall.roll%type;
+    v_name n_rollcall.name%type;
+    v_exist number;
+
+begin
+    open c1;
+
+    loop
+        fetch c1 into v_roll, v_name;
+        exit when c1%notfound;
+
+        -- check if record exists
+        open c2(v_roll);
+        fetch c2 into v_exist;
+
+        if c2%notfound then
+            insert into o_rollcall values (v_roll, v_name);
+            dbms_output.put_line('inserted roll: ' || v_roll);
+        else
+            dbms_output.put_line('skipped roll: ' || v_roll);
+        end if;
+
+        close c2;
+    end loop;
+
+    close c1;
+    commit;
+
+exception
+    when others then
+        dbms_output.put_line('error: ' || sqlerrm);
+end;
+/
