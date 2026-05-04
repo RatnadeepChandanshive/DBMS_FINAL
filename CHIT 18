@@ -1,0 +1,23 @@
+db.orderinfo.updateMany(
+ {},
+ { $set: { Age: 25 } }
+)
+
+db.orderinfo.createIndex(
+ { cust_id:1, status:1 },
+ { unique:true }
+)
+
+db.orderinfo.aggregate([
+ {
+   $group: {
+     _id: "$status",
+     avgPrice: { $avg: "$price" }
+   }
+ }
+])
+
+db.orderinfo.updateMany(
+ { status: "B" },
+ { $set: { cust_name: "UpdatedName" } }
+)
