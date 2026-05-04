@@ -1,0 +1,46 @@
+use Institute
+
+db.createCollection("Students")
+
+db.Students.insertMany([
+ {rollNo:1,name:"Amit",age:18,branch:"IT",address:{city:"Pune",state:"MH"},hobbies:["Cricket","Music"]},
+ {rollNo:2,name:"Neha",age:17,branch:"CS",address:{city:"Mumbai",state:"MH"},hobbies:["Dance"]},
+ {rollNo:3,name:"Raj",age:19,branch:"ENTC",address:{city:"Pune",state:"MH"},hobbies:["Reading"]},
+ {rollNo:4,name:"Anil",age:16,branch:"IT",address:{city:"Nashik",state:"MH"},hobbies:["Gaming"]},
+ {rollNo:5,name:"Priya",age:20,branch:"CS",address:{city:"Pune",state:"MH"},hobbies:["Music"]},
+ {rollNo:6,name:"Kiran",age:15,branch:"ENTC",address:{city:"Delhi",state:"DL"},hobbies:["Sports"]},
+ {rollNo:7,name:"Arjun",age:21,branch:"IT",address:{city:"Pune",state:"MH"},hobbies:["Cricket"]},
+ {rollNo:8,name:"Sneha",age:18,branch:"CS",address:{city:"Mumbai",state:"MH"},hobbies:["Dance"]},
+ {rollNo:9,name:"Akash",age:22,branch:"IT",address:{city:"Pune",state:"MH"},hobbies:["Music"]},
+ {rollNo:10,name:"Riya",age:19,branch:"CS",address:{city:"Pune",state:"MH"},hobbies:["Reading"]}
+])
+
+db.Students.find()
+
+db.Students.find({ age: { $gt: 15 } })
+
+db.Students.find().sort({ name: 1 })
+
+db.Students.updateOne(
+ { rollNo: 3 },
+ { $set: { branch: "Computer" } }
+)
+
+db.Students.deleteOne({ rollNo: 1 })
+
+db.Students.find({ name: { $regex: "^A" } })
+
+db.Students.countDocuments()
+
+db.Students.find().limit(5)
+
+db.Students.find().skip(3)
+
+db.Students.find(
+ { "address.city": "Pune" },
+ { name: 1, _id: 0 }
+)
+
+db.Students.find({}, { name: 1, _id: 0 })
+
+db.Students.drop()
