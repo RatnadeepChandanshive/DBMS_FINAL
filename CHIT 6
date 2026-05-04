@@ -1,0 +1,64 @@
+CREATE TABLE Stud_Marks (
+    Roll NUMBER,
+    Name VARCHAR2(30),
+    Total_Marks NUMBER
+);
+
+CREATE TABLE Result (
+    Roll NUMBER,
+    Name VARCHAR2(30),
+    Class VARCHAR2(30)
+);
+
+INSERT INTO Stud_Marks VALUES (1, 'Amit', 1000);
+
+INSERT INTO Stud_Marks VALUES (2, 'Neha', 950);
+
+INSERT INTO Stud_Marks VALUES (3, 'Rahul', 850);
+
+CREATE OR REPLACE PROCEDURE proc_Grade IS
+
+    CURSOR c1 IS
+        SELECT Roll, Name, Total_Marks FROM Stud_Marks;
+
+    v_roll Stud_Marks.Roll%TYPE;
+    v_name Stud_Marks.Name%TYPE;
+    v_marks Stud_Marks.Total_Marks%TYPE;
+    v_class VARCHAR2(30);
+
+BEGIN
+    OPEN c1;
+
+    LOOP
+        FETCH c1 INTO v_roll, v_name, v_marks;
+        EXIT WHEN c1%NOTFOUND;
+
+        -- Grade Logic
+        IF v_marks >= 990 AND v_marks <= 1500 THEN
+            v_class := 'Distinction';
+
+        ELSIF v_marks >= 900 AND v_marks <= 989 THEN
+            v_class := 'First Class';
+
+        ELSIF v_marks >= 825 AND v_marks <= 899 THEN
+            v_class := 'Higher Second Class';
+
+        ELSE
+            v_class := 'Fail';
+        END IF;
+
+        -- Insert into Result table
+        INSERT INTO Result VALUES (v_roll, v_name, v_class);
+
+    END LOOP;
+
+    CLOSE c1;
+    COMMIT;
+
+END;
+/
+
+BEGIN
+    proc_Grade;
+END;
+/
